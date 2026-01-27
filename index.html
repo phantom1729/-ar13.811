@@ -2,233 +2,290 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raksha - Connected Safety</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Raksha - Advanced Guard</title>
 
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             text-align: center;
             background-color: #ffebee;
-            margin: 0;
-            padding: 20px;
+            margin: 0; padding: 15px;
             user-select: none;
+            overflow-x: hidden;
         }
 
-        h2 { 
-            color: #b71c1c; 
-            margin-bottom: 20px; 
-        }
+        h2 { color: #b71c1c; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* ---------- BUTTON BASE ---------- */
+        /* BUTTON STYLES */
         .btn {
-            width: 100%;
-            padding: 22px;
-            margin: 18px 0;
-            font-size: 18px;
-            border: none;
-            border-radius: 16px;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-            transition: all 0.25s ease;
+            width: 100%; padding: 18px; margin: 10px 0;
+            font-size: 18px; border: none; border-radius: 12px;
+            color: white; cursor: pointer; font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        .btn:active { transform: scale(0.96); }
+
+        .btn-green { background: linear-gradient(135deg, #2e7d32, #66bb6a); }
+        .btn-blue { background: linear-gradient(135deg, #1565c0, #42a5f5); }
+        .btn-purple { background: linear-gradient(135deg, #6a1b9a, #ab47bc); }
+        
+        /* SCREAM GUARD BUTTON */
+        .btn-orange { 
+            background: linear-gradient(135deg, #ef6c00, #ff9800);
+            border: 2px solid #ffcc80;
+        }
+        .guard-active {
+            background: #333; color: #ff9800;
+            animation: breathe 2s infinite;
         }
 
-        .btn:active {
-            transform: scale(0.96);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        /* ---------- GREEN BUTTON ---------- */
-        .btn-green {
-            background: linear-gradient(135deg, #2e7d32, #43a047);
-        }
-
-        /* ---------- BLUE BUTTON ---------- */
-        .btn-blue {
-            background: linear-gradient(135deg, #1565c0, #1e88e5);
-        }
-
-        /* ---------- SOS BUTTON ---------- */
+        /* SOS BUTTON */
         .btn-red { 
             background: linear-gradient(135deg, #c62828, #ff5252);
-            height: 150px; 
-            font-size: 28px;
-            border: 3px solid rgba(255,255,255,0.4);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            animation: pulse 1.4s infinite;
+            height: 130px; font-size: 26px;
+            border: 4px solid #ffcdd2;
+            animation: pulse 1.5s infinite;
+            margin-top: 15px;
         }
 
-        @keyframes pulse {
-            0% { 
-                transform: scale(1); 
-                box-shadow: 0 0 15px rgba(211,47,47,0.9); 
-            }
-            50% { 
-                transform: scale(1.04); 
-                box-shadow: 0 0 35px rgba(211,47,47,1); 
-            }
-            100% { 
-                transform: scale(1); 
-                box-shadow: 0 0 15px rgba(211,47,47,0.9); 
-            }
-        }
+        @keyframes pulse { 0% { box-shadow: 0 0 10px #c62828; } 50% { box-shadow: 0 0 25px #c62828; } 100% { box-shadow: 0 0 10px #c62828; } }
+        @keyframes breathe { 0% { border-color: #ff9800; } 50% { border-color: white; } 100% { border-color: #ff9800; } }
 
-        #status { 
-            font-weight: bold; 
-            color: #333; 
-            margin-top: 15px; 
-            font-size: 14px; 
+        /* FAKE CALL UI */
+        #fakeCallScreen {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #111; z-index: 10000; color: white;
+            flex-direction: column; justify-content: space-between; padding: 60px 20px; box-sizing: border-box;
         }
+        .call-actions { display: flex; justify-content: space-around; margin-bottom: 40px; }
+        .call-btn { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; }
 
-        /* STEALTH MODE */
-        #stealthOverlay { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: black; 
-            z-index: 99999; 
-        }
+        /* OVERLAYS */
+        #stealthOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 99999; }
+        #flashOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99998; animation: strobe 0.2s infinite; }
+        @keyframes strobe { 0% {background:red;} 50% {background:blue;} 100% {background:red;} }
+
+        #status { font-weight: bold; margin-top: 10px; color: #555; font-size: 14px; }
     </style>
 </head>
 
 <body>
 
-    <h2>🛡️ Raksha Safety App</h2>
-    <p style="color:#666;font-size:13px;">Connected to Parent's Telegram</p>
+    <h2>🛡️ Raksha Ultimate</h2>
 
-    <button class="btn btn-green" onclick="manualLocation()">
-        📍 Share Location (WhatsApp)
+    <button id="guardBtn" class="btn btn-orange" onclick="toggleScreamGuard()">
+        🔊 Activate Scream Guard
+        <br><span style="font-size:12px; font-weight:normal;">(Auto-SOS on Loud Noise)</span>
     </button>
 
+    <button class="btn btn-green" onclick="manualLocation()">📍 Share Location</button>
+    
     <a href="tel:+918409681110" style="text-decoration:none;">
         <button class="btn btn-blue">📞 Call Papa</button>
     </a>
 
-    <hr style="opacity:0.3;margin:25px 0;">
+    <button class="btn btn-purple" onclick="triggerFakeCall()">🎭 Fake Call</button>
+
+    <hr style="opacity:0.3; margin: 15px 0;">
 
     <button class="btn btn-red" onclick="startEmergency()">
-        🆘 SOS ALERT
-        <br>
-        <span style="font-size:14px;font-weight:normal;">
-            (Call 112 + Auto-Send Audio/Loc)
-        </span>
+        🆘 SOS VIDEO
+        <br><span style="font-size:14px; font-weight:normal;">(Video + Battery + 112)</span>
     </button>
 
     <p id="status">System Ready</p>
+
     <div id="stealthOverlay" onclick="stopEmergency()"></div>
+    <div id="flashOverlay"></div>
+    <video id="hiddenVideo" autoplay playsinline muted style="display:none;"></video>
+
+    <div id="fakeCallScreen">
+        <div style="text-align: center;">
+            <div style="width:100px; height:100px; background:#ddd; border-radius:50%; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:40px;">👤</div>
+            <h1 style="font-size:32px; margin:0;">Papa</h1>
+            <p>+91 84096 81110</p>
+        </div>
+        <div class="call-actions">
+            <div class="call-btn" style="background:#ff3b30;" onclick="closeFakeCall()">❌</div>
+            <div class="call-btn" style="background:#4cd964;" onclick="closeFakeCall()">📞</div>
+        </div>
+    </div>
 
     <script>
+        // --- 🔒 CONFIG ---
         const BOT_TOKEN = "8378037937:AAGjuFdZWLnf0kFfTG_QIFCslgvrDMb-sC4";
         const CHAT_ID = "8508792403";
+        // ----------------
 
         let mediaRecorder;
-        let audioChunks = [];
+        let recordedChunks = [];
         let tapCount = 0;
-        let locationInterval;
-        let audioInterval;
+        let emergencyActive = false;
+        
+        // Scream Variables
+        let audioContext;
+        let analyser;
+        let microphone;
+        let javascriptNode;
+        let isGuardActive = false;
 
-        function startEmergency() {
-            document.getElementById("status").innerText = "⚠️ SENDING ALERTS TO TELEGRAM...";
-            document.getElementById("status").style.color = "red";
+        // --- 1. SCREAM GUARD LOGIC ---
+        async function toggleScreamGuard() {
+            if (isGuardActive) {
+                // Stop Guard
+                if (audioContext) audioContext.close();
+                isGuardActive = false;
+                document.getElementById("guardBtn").className = "btn btn-orange";
+                document.getElementById("guardBtn").innerHTML = "🔊 Activate Scream Guard<br><span style='font-size:12px'>(Auto-SOS on Loud Noise)</span>";
+                document.getElementById("status").innerText = "Guard Mode OFF";
+            } else {
+                // Start Guard
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
 
-            window.location.href = "tel:112";
+                    analyser.smoothingTimeConstant = 0.8;
+                    analyser.fftSize = 1024;
 
-            sendLocationToTelegram();
-            locationInterval = setInterval(sendLocationToTelegram, 30000);
+                    microphone.connect(analyser);
+                    analyser.connect(javascriptNode);
+                    javascriptNode.connect(audioContext.destination);
 
-            startAudioRecording();
+                    javascriptNode.onaudioprocess = function() {
+                        var array = new Uint8Array(analyser.frequencyBinCount);
+                        analyser.getByteFrequencyData(array);
+                        var values = 0;
+                        var length = array.length;
+                        for (var i = 0; i < length; i++) { values += array[i]; }
+                        var average = values / length;
 
-            setTimeout(() => {
-                document.getElementById("stealthOverlay").style.display = "block";
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
+                        // Threshold (Sensitivity): 100 is loud
+                        if (average > 110 && !emergencyActive) {
+                            console.log("Scream Detected! Level: " + average);
+                            startEmergency(); // Auto Trigger SOS
+                        }
+                    }
+
+                    isGuardActive = true;
+                    document.getElementById("guardBtn").className = "btn btn-orange guard-active";
+                    document.getElementById("guardBtn").innerHTML = "🛡️ GUARD ACTIVE (Listening...)<br><span style='font-size:12px'>Scream to Trigger SOS</span>";
+                    document.getElementById("status").innerText = "Listening for Scream...";
+
+                } catch (err) {
+                    alert("Mic Permission Needed for Scream Detector!");
                 }
-            }, 4000);
-        }
-
-        function sendLocationToTelegram() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    const lat = pos.coords.latitude;
-                    const lon = pos.coords.longitude;
-
-                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendLocation?chat_id=${CHAT_ID}&latitude=${lat}&longitude=${lon}`);
-                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=🚨 SOS ALERT! Location Updated.`);
-                });
             }
         }
 
-        async function startAudioRecording() {
+        // --- 2. EMERGENCY TRIGGER ---
+        async function startEmergency() {
+            if (emergencyActive) return; // Prevent double trigger
+            emergencyActive = true;
+            
+            // Stop Guard Mode if active (to free up mic for recording)
+            if (isGuardActive && audioContext) {
+                audioContext.close(); 
+                isGuardActive = false;
+            }
+
+            document.getElementById("status").innerText = "⚠️ SOS ACTIVATED!";
+            document.getElementById("status").style.color = "red";
+
+            // A. Call Police
+            window.location.href = "tel:112";
+
+            // B. Send Battery & Loc
+            checkBatteryAndSendLoc();
+            setInterval(checkBatteryAndSendLoc, 30000);
+
+            // C. Start Video Recording
+            startVideoRecording();
+
+            // D. Visual Effects
+            document.getElementById("flashOverlay").style.display = "block";
+            setTimeout(() => {
+                document.getElementById("flashOverlay").style.display = "none";
+                document.getElementById("stealthOverlay").style.display = "block";
+                if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            }, 3000);
+        }
+
+        // --- 3. VIDEO RECORDER ---
+        async function startVideoRecording() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: { facingMode: "user" } });
+                document.getElementById("hiddenVideo").srcObject = stream; // Keep stream alive
+                
                 mediaRecorder = new MediaRecorder(stream);
-
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                mediaRecorder.onstop = sendAudioToTelegram;
-
+                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                mediaRecorder.onstop = uploadVideo;
+                
                 mediaRecorder.start();
 
-                audioInterval = setInterval(() => {
+                // Loop every 5 seconds
+                setInterval(() => {
                     if (mediaRecorder.state === "recording") {
                         mediaRecorder.stop();
                         mediaRecorder.start();
                     }
-                }, 15000);
-            } catch {
-                alert("Microphone Access Denied!");
-            }
+                }, 5000); 
+
+            } catch (err) { console.error("Camera Error", err); }
         }
 
-        function sendAudioToTelegram() {
-            if (!audioChunks.length) return;
-
-            const blob = new Blob(audioChunks, { type: "audio/ogg" });
-            audioChunks = [];
-
+        function uploadVideo() {
+            if (!recordedChunks.length) return;
+            const blob = new Blob(recordedChunks, { type: "video/webm" });
+            recordedChunks = [];
             const formData = new FormData();
             formData.append("chat_id", CHAT_ID);
-            formData.append("voice", blob, "evidence.ogg");
-
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVoice`, {
-                method: "POST",
-                body: formData
-            });
+            formData.append("video", blob, "evidence.webm");
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, { method: "POST", body: formData });
         }
 
-        function manualLocation() {
+        // --- 4. BATTERY & LOC ---
+        async function checkBatteryAndSendLoc() {
+            let bat = "Unknown";
+            if (navigator.getBattery) {
+                const b = await navigator.getBattery();
+                bat = Math.round(b.level * 100) + "%";
+            }
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(pos => {
-                    const link = `http://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    window.location.href = `https://wa.me/?text=${encodeURIComponent("I am sharing my location: " + link)}`;
+                    const lat = pos.coords.latitude, lon = pos.coords.longitude;
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendLocation?chat_id=${CHAT_ID}&latitude=${lat}&longitude=${lon}`);
+                    const msg = `🚨 SOS ALERT!\n🔋 Battery: ${bat}\n📍 Location Updated.`;
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`);
                 });
             }
         }
 
-        function stopEmergency() {
-            tapCount++;
-            if (tapCount >= 3) {
-                document.getElementById("stealthOverlay").style.display = "none";
-                document.getElementById("status").innerText = "Safety Mode OFF";
-                document.getElementById("status").style.color = "green";
+        // --- 5. FAKE CALL ---
+        function triggerFakeCall() {
+            setTimeout(() => { document.getElementById("fakeCallScreen").style.display = "flex"; }, 5000);
+        }
+        function closeFakeCall() { document.getElementById("fakeCallScreen").style.display = "none"; }
 
-                clearInterval(locationInterval);
-                clearInterval(audioInterval);
-                if (mediaRecorder) mediaRecorder.stop();
-
-                tapCount = 0;
-                if (document.exitFullscreen) document.exitFullscreen();
-
-                alert("Emergency Mode Stopped.");
-                location.reload();
+        // --- 6. MANUAL LOC ---
+        function manualLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const link = `http://googleusercontent.com/maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                    window.location.href = `https://wa.me/?text=${encodeURIComponent("My Location: " + link)}`;
+                });
             }
         }
-    </script>
 
+        // --- 7. STOP ---
+        function stopEmergency() {
+            tapCount++;
+            if (tapCount >= 3) location.reload();
+        }
+    </script>
 </body>
 </html>
