@@ -1,156 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>System Breach</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-background:black;
-color:#00ff00;
-font-family:monospace;
-overflow:hidden;
-}
-#matrix{position:fixed;inset:0;z-index:-1;opacity:.35}
-#terminal{padding:15px;height:100vh;overflow:auto;font-size:14px;line-height:1.4}
-.warning{color:red;font-size:22px;text-align:center;margin:20px}
-.popup{
-position:fixed;inset:0;
-background:rgba(0,0,0,.95);
-display:flex;align-items:center;justify-content:center;
-flex-direction:column;
-color:white;
-z-index:999;
-font-size:20px;
-}
-.shake{animation:shake .1s infinite}
-@keyframes shake{
-0%{transform:translate(0)}
-25%{transform:translate(5px)}
-50%{transform:translate(-5px)}
-75%{transform:translate(5px)}
-100%{transform:translate(0)}
-}
-.led{
-position:fixed;
-top:8px;right:12px;
-width:12px;height:12px;
-border-radius:50%;
-background:red;
-animation:blink 1s infinite;
-z-index:1000;
-}
-@keyframes blink{50%{opacity:.1}}
-.hidden{display:none}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raksha - Connected Safety</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #ffebee;
+            margin: 0;
+            padding: 20px;
+            user-select: none;
+        }
+
+        h2 { 
+            color: #b71c1c; 
+            margin-bottom: 20px; 
+        }
+
+        /* ---------- BUTTON BASE ---------- */
+        .btn {
+            width: 100%;
+            padding: 22px;
+            margin: 18px 0;
+            font-size: 18px;
+            border: none;
+            border-radius: 16px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+            transition: all 0.25s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* ---------- GREEN BUTTON ---------- */
+        .btn-green {
+            background: linear-gradient(135deg, #2e7d32, #43a047);
+        }
+
+        /* ---------- BLUE BUTTON ---------- */
+        .btn-blue {
+            background: linear-gradient(135deg, #1565c0, #1e88e5);
+        }
+
+        /* ---------- SOS BUTTON ---------- */
+        .btn-red { 
+            background: linear-gradient(135deg, #c62828, #ff5252);
+            height: 150px; 
+            font-size: 28px;
+            border: 3px solid rgba(255,255,255,0.4);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+            0% { 
+                transform: scale(1); 
+                box-shadow: 0 0 15px rgba(211,47,47,0.9); 
+            }
+            50% { 
+                transform: scale(1.04); 
+                box-shadow: 0 0 35px rgba(211,47,47,1); 
+            }
+            100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 15px rgba(211,47,47,0.9); 
+            }
+        }
+
+        #status { 
+            font-weight: bold; 
+            color: #333; 
+            margin-top: 15px; 
+            font-size: 14px; 
+        }
+
+        /* STEALTH MODE */
+        #stealthOverlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: black; 
+            z-index: 99999; 
+        }
+    </style>
 </head>
+
 <body>
 
-<canvas id="matrix"></canvas>
-<div class="led"></div>
-<div id="terminal"></div>
+    <h2>🛡️ Raksha Safety App</h2>
+    <p style="color:#666;font-size:13px;">Connected to Parent's Telegram</p>
 
-<audio id="click" src="https://actions.google.com/sounds/v1/camera/camera_shutter_click_01.mp3"></audio>
-<audio id="ring" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>
+    <button class="btn btn-green" onclick="manualLocation()">
+        📍 Share Location (WhatsApp)
+    </button>
 
-<script>
-// MATRIX
-const c=document.getElementById("matrix"),x=c.getContext("2d");
-c.width=innerWidth;c.height=innerHeight;
-let letters="01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-let font=16,cols=c.width/font;
-let drops=Array(Math.floor(cols)).fill(1);
-setInterval(()=>{
-x.fillStyle="rgba(0,0,0,.05)";
-x.fillRect(0,0,c.width,c.height);
-x.fillStyle="#0f0";
-x.font=font+"px monospace";
-drops.forEach((y,i)=>{
-let t=letters[Math.floor(Math.random()*letters.length)];
-x.fillText(t,i*font,y*font);
-if(y*font>c.height&&Math.random()>.98)drops[i]=0;
-drops[i]++;
-});
-},33);
+    <a href="tel:+918409681110" style="text-decoration:none;">
+        <button class="btn btn-blue">📞 Call Papa</button>
+    </a>
 
-// TERMINAL
-const t=document.getElementById("terminal");
-const logs=[
-"> Connecting to device...",
-"> Camera permission GRANTED",
-"> Screenshot captured",
-"> GPS Locked: 28.6139° N , 77.2090° E",
-"> WhatsApp service hijacked",
-"> Incoming remote command...",
-"> Nearby device connected",
-"> Battery critical: 1%",
-"> CYBER CELL TRACE ENABLED",
-"> DATA WIPE IN 10 SECONDS"
-];
+    <hr style="opacity:0.3;margin:25px 0;">
 
-let i=0;
-function log(){
-if(i<logs.length){
-t.innerHTML+=logs[i++]+"<br>";
-t.scrollTop=t.scrollHeight;
-if(i==2)document.getElementById("click").play();
-if(i==5)document.getElementById("ring").play();
-setTimeout(log,900);
-}else sequence();
-}
-setTimeout(log,1000);
+    <button class="btn btn-red" onclick="startEmergency()">
+        🆘 SOS ALERT
+        <br>
+        <span style="font-size:14px;font-weight:normal;">
+            (Call 112 + Auto-Send Audio/Loc)
+        </span>
+    </button>
 
-// SEQUENCE
-function sequence(){
-navigator.vibrate?.([200,100,200,100,200]);
-document.body.classList.add("shake");
+    <p id="status">System Ready</p>
+    <div id="stealthOverlay" onclick="stopEmergency()"></div>
 
-popup("📸 Screenshot Captured",1500,()=>{
-popup("📞 Fake WhatsApp Incoming Call",2000,()=>{
-popup("🔐 Lock Screen Compromised",2000,()=>{
-popup("🚓 CYBER CELL NOTICE\nIP TRACKED",2500,()=>{
-countdown(10);
-});
-});
-});
-});
-}
+    <script>
+        const BOT_TOKEN = "8378037937:AAGjuFdZWLnf0kFfTG_QIFCslgvrDMb-sC4";
+        const CHAT_ID = "8508792403";
 
-// POPUP
-function popup(text,time,cb){
-let p=document.createElement("div");
-p.className="popup";
-p.innerText=text;
-document.body.appendChild(p);
-setTimeout(()=>{p.remove();cb&&cb();},time);
-}
+        let mediaRecorder;
+        let audioChunks = [];
+        let tapCount = 0;
+        let locationInterval;
+        let audioInterval;
 
-// COUNTDOWN
-function countdown(n){
-let p=document.createElement("div");
-p.className="popup";
-document.body.appendChild(p);
-let i=n;
-let int=setInterval(()=>{
-p.innerText="🧨 DATA WIPE IN "+i+"s";
-i--;
-if(i<0){
-clearInterval(int);
-selfDestruct();
-}
-},1000);
-}
+        function startEmergency() {
+            document.getElementById("status").innerText = "⚠️ SENDING ALERTS TO TELEGRAM...";
+            document.getElementById("status").style.color = "red";
 
-// FINAL
-function selfDestruct(){
-document.body.innerHTML="";
-document.body.style.background="black";
-setTimeout(()=>{
-document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:40vh'>CONNECTION TERMINATED</h1>";
-},800);
-}
-</script>
+            window.location.href = "tel:112";
+
+            sendLocationToTelegram();
+            locationInterval = setInterval(sendLocationToTelegram, 30000);
+
+            startAudioRecording();
+
+            setTimeout(() => {
+                document.getElementById("stealthOverlay").style.display = "block";
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                }
+            }, 4000);
+        }
+
+        function sendLocationToTelegram() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendLocation?chat_id=${CHAT_ID}&latitude=${lat}&longitude=${lon}`);
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=🚨 SOS ALERT! Location Updated.`);
+                });
+            }
+        }
+
+        async function startAudioRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = sendAudioToTelegram;
+
+                mediaRecorder.start();
+
+                audioInterval = setInterval(() => {
+                    if (mediaRecorder.state === "recording") {
+                        mediaRecorder.stop();
+                        mediaRecorder.start();
+                    }
+                }, 15000);
+            } catch {
+                alert("Microphone Access Denied!");
+            }
+        }
+
+        function sendAudioToTelegram() {
+            if (!audioChunks.length) return;
+
+            const blob = new Blob(audioChunks, { type: "audio/ogg" });
+            audioChunks = [];
+
+            const formData = new FormData();
+            formData.append("chat_id", CHAT_ID);
+            formData.append("voice", blob, "evidence.ogg");
+
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVoice`, {
+                method: "POST",
+                body: formData
+            });
+        }
+
+        function manualLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const link = `http://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                    window.location.href = `https://wa.me/?text=${encodeURIComponent("I am sharing my location: " + link)}`;
+                });
+            }
+        }
+
+        function stopEmergency() {
+            tapCount++;
+            if (tapCount >= 3) {
+                document.getElementById("stealthOverlay").style.display = "none";
+                document.getElementById("status").innerText = "Safety Mode OFF";
+                document.getElementById("status").style.color = "green";
+
+                clearInterval(locationInterval);
+                clearInterval(audioInterval);
+                if (mediaRecorder) mediaRecorder.stop();
+
+                tapCount = 0;
+                if (document.exitFullscreen) document.exitFullscreen();
+
+                alert("Emergency Mode Stopped.");
+                location.reload();
+            }
+        }
+    </script>
 
 </body>
 </html>
