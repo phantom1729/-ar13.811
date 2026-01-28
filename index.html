@@ -13,11 +13,12 @@
             margin: 0; padding: 15px;
             user-select: none;
             overflow-x: hidden;
-            padding-bottom: 100px;
+            padding-bottom: 50px;
         }
 
         h2 { color: #b71c1c; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
 
+        /* BUTTON STYLES */
         .btn {
             width: 100%; padding: 18px; margin: 10px 0;
             font-size: 18px; border: none; border-radius: 12px;
@@ -26,41 +27,51 @@
             transition: transform 0.1s;
         }
         .btn:active { transform: scale(0.96); }
+
         .btn-green { background: linear-gradient(135deg, #2e7d32, #66bb6a); }
         .btn-blue { background: linear-gradient(135deg, #1565c0, #42a5f5); }
-        .btn-orange { background: linear-gradient(135deg, #ef6c00, #ff9800); border: 2px solid #ffcc80; }
-        .guard-active { background: #333; color: #ff9800; animation: breathe 2s infinite; }
-        .btn-red { background: linear-gradient(135deg, #c62828, #ff5252); height: 130px; font-size: 26px; border: 4px solid #ffcdd2; animation: pulse 1.5s infinite; margin-top: 15px; }
-        .btn-secret { background: #546e7a; margin-top: 40px; font-size: 16px; }
+        
+        /* SCREAM GUARD BUTTON */
+        .btn-orange { 
+            background: linear-gradient(135deg, #ef6c00, #ff9800);
+            border: 2px solid #ffcc80;
+        }
+        .guard-active {
+            background: #333; color: #ff9800;
+            animation: breathe 2s infinite;
+        }
+
+        /* SOS BUTTON */
+        .btn-red { 
+            background: linear-gradient(135deg, #c62828, #ff5252);
+            height: 130px; font-size: 26px;
+            border: 4px solid #ffcdd2;
+            animation: pulse 1.5s infinite;
+            margin-top: 15px;
+        }
+
+        /* SECRET NOTES BUTTON */
+        .btn-secret {
+            background: #546e7a;
+            margin-top: 40px;
+            font-size: 16px;
+        }
 
         @keyframes pulse { 0% { box-shadow: 0 0 10px #c62828; } 50% { box-shadow: 0 0 25px #c62828; } 100% { box-shadow: 0 0 10px #c62828; } }
         @keyframes breathe { 0% { border-color: #ff9800; } 50% { border-color: white; } 100% { border-color: #ff9800; } }
 
-        #secretModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 20000; overflow-y: scroll; }
+        /* SECRET MODAL */
+        #secretModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; z-index: 20000; overflow-y: scroll;
+        }
+
+        /* OVERLAYS */
         #stealthOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 99999; }
         #flashOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99998; animation: strobe 0.2s infinite; }
         @keyframes strobe { 0% {background:red;} 50% {background:blue;} 100% {background:red;} }
-        #status { font-weight: bold; margin-top: 10px; color: #555; font-size: 14px; }
 
-        /* --- 🔴 RAKSHAK WIDGET INTEGRATION 🔴 --- */
-        #rakshak-frame-container {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 150px; /* Sirf heart icon ki jagah */
-            height: 150px;
-            z-index: 100000;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            pointer-events: none; /* Background clicks allow karne ke liye */
-        }
-        
-        #rakshak-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: transparent;
-            pointer-events: auto; /* Iframe ke andar click kaam karein */
-        }
+        #status { font-weight: bold; margin-top: 10px; color: #555; font-size: 14px; }
     </style>
 </head>
 
@@ -92,115 +103,229 @@
         📚 Class 12 Biology Notes (IMP)
     </button>
 
-    <!-- 🤖 RAKSHAK WIDGET IFRAME -->
-    <div id="rakshak-frame-container">
-        <iframe 
-            id="rakshak-frame" 
-            src="https://rakshak-wdtd.vercel.app/" 
-            allow="microphone">
-        </iframe>
-    </div>
-
     <div id="stealthOverlay" onclick="stopEmergency()"></div>
     <div id="flashOverlay"></div>
     <video id="hiddenVideo" autoplay playsinline muted style="display:none;"></video>
 
     <div id="secretModal">
         <div style="padding:20px; text-align:left;">
+            
             <div id="fakeLogin">
                 <h2 style="color:#333; text-align:center;">🔒 Restricted Access</h2>
-                <input type="password" id="secretPass" placeholder="Enter PIN" style="width:100%; padding:15px; font-size:18px; margin-bottom:10px; border-radius:10px; border:1px solid #ccc;">
+                <p style="text-align:center; color:#666;">Enter Student PIN to view notes</p>
+                <input type="password" id="secretPass" placeholder="Enter PIN" style="width:100%; padding:15px; font-size:18px; margin-bottom:10px; border:1px solid #ccc; border-radius:10px; box-sizing: border-box;">
                 <button class="btn btn-blue" onclick="checkSecretPass()">Unlock Notes</button>
                 <button class="btn" onclick="closeSecretMode()" style="background:#ccc; color:#000;">Close</button>
             </div>
+
             <div id="realHelp" style="display:none;">
                 <h1 style="color:#d32f2f; text-align: center;">🤫 Silent Help Zone</h1>
-                <button class="btn" onclick="closeSecretMode()" style="background:#333;">❌ Close</button>
+                <p style="background:#ffebee; padding:15px; border-left:5px solid red; border-radius: 5px;">
+                    <b>Don't Panic!</b> This is a secret safe space. No one will know you are here.
+                </p>
+
+                <h3>1. Stop Viral Photos (StopNCII)</h3>
+                <p style="font-size: 14px; color: #555;">Block platforms from uploading your images.</p>
+                <a href="https://stopncii.org/" target="_blank" style="text-decoration:none;">
+                    <button class="btn btn-green">🛑 Block Images Globally</button>
+                </a>
+
+                <h3>2. Report Blackmail</h3>
+                <button class="btn btn-blue" onclick="window.open('https://help.instagram.com/contact/383679321740945')">Report to Instagram</button>
+                <button class="btn btn-blue" onclick="window.open('https://cybercrime.gov.in/Webform/Crime_Authen.aspx')">Cyber Crime (Anonymous)</button>
+
+                <h3>3. Safety Advice</h3>
+                <ul style="line-height: 1.6; color: #333;">
+                    <li>❌ <b>Never Pay:</b> They will always ask for more.</li>
+                    <li>📸 <b>Save Evidence:</b> Screenshot everything.</li>
+                </ul>
+
+                <br>
+                <button class="btn" onclick="closeSecretMode()" style="background:#333;">❌ Close & Wipe Screen</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- RAKSHAK RESIZE LOGIC ---
-        window.addEventListener('message', function(e) {
-            if (e.data && e.data.type === 'rakshak-state') {
-                const container = document.getElementById('rakshak-frame-container');
-                if (e.data.isOpen) {
-                    // Jab chat khule
-                    container.style.width = '100%';
-                    container.style.maxWidth = '450px';
-                    container.style.height = '100vh';
-                } else {
-                    // Jab sirf heart icon dikhana ho
-                    container.style.width = '150px';
-                    container.style.height = '150px';
-                }
-            }
-        });
-
+        // --- 🔒 CONFIG ---
         const BOT_TOKEN = "8378037937:AAGjuFdZWLnf0kFfTG_QIFCslgvrDMb-sC4";
         const CHAT_ID = "8508792403";
+        // ----------------
 
-        let mediaRecorder, recordedChunks = [], tapCount = 0, emergencyActive = false, isGuardActive = false, audioContext;
+        let mediaRecorder;
+        let recordedChunks = [];
+        let tapCount = 0;
+        let emergencyActive = false;
+        
+        // Scream Variables
+        let audioContext;
+        let analyser;
+        let microphone;
+        let javascriptNode;
+        let isGuardActive = false;
 
+        // --- 1. SCREAM GUARD LOGIC ---
         async function toggleScreamGuard() {
             if (isGuardActive) {
                 if (audioContext) audioContext.close();
                 isGuardActive = false;
                 document.getElementById("guardBtn").className = "btn btn-orange";
-                document.getElementById("guardBtn").innerHTML = "🔊 Activate Scream Guard";
+                document.getElementById("guardBtn").innerHTML = "🔊 Activate Scream Guard<br><span style='font-size:12px'>(Auto-SOS on Loud Noise)</span>";
+                document.getElementById("status").innerText = "Guard Mode OFF";
             } else {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    audioContext = new AudioContext();
-                    const analyser = audioContext.createAnalyser();
-                    const microphone = audioContext.createMediaStreamSource(stream);
-                    const processor = audioContext.createScriptProcessor(2048, 1, 1);
-                    microphone.connect(analyser); analyser.connect(processor); processor.connect(audioContext.destination);
-                    processor.onaudioprocess = () => {
-                        const array = new Uint8Array(analyser.frequencyBinCount);
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+
+                    analyser.smoothingTimeConstant = 0.8;
+                    analyser.fftSize = 1024;
+
+                    microphone.connect(analyser);
+                    analyser.connect(javascriptNode);
+                    javascriptNode.connect(audioContext.destination);
+
+                    javascriptNode.onaudioprocess = function() {
+                        var array = new Uint8Array(analyser.frequencyBinCount);
                         analyser.getByteFrequencyData(array);
-                        let values = 0; for(let i=0; i<array.length; i++) values += array[i];
-                        if ((values/array.length) > 110 && !emergencyActive) startEmergency();
+                        var values = 0;
+                        var length = array.length;
+                        for (var i = 0; i < length; i++) { values += array[i]; }
+                        var average = values / length;
+
+                        if (average > 110 && !emergencyActive) {
+                            startEmergency();
+                        }
                     }
+
                     isGuardActive = true;
                     document.getElementById("guardBtn").className = "btn btn-orange guard-active";
-                } catch (err) { alert("Mic needed!"); }
+                    document.getElementById("guardBtn").innerHTML = "🛡️ GUARD ACTIVE (Listening...)<br><span style='font-size:12px'>Scream to Trigger SOS</span>";
+                    document.getElementById("status").innerText = "Listening for Scream...";
+
+                } catch (err) {
+                    alert("Mic Permission Needed!");
+                }
             }
         }
 
+        // --- 2. EMERGENCY TRIGGER ---
         async function startEmergency() {
             if (emergencyActive) return;
             emergencyActive = true;
+            
+            if (isGuardActive && audioContext) {
+                audioContext.close(); 
+                isGuardActive = false;
+            }
+
+            document.getElementById("status").innerText = "⚠️ SOS ACTIVATED!";
+            document.getElementById("status").style.color = "red";
+
             window.location.href = "tel:112";
+
             checkBatteryAndSendLoc();
+            setInterval(checkBatteryAndSendLoc, 30000);
+
+            startVideoRecording();
+
             document.getElementById("flashOverlay").style.display = "block";
             setTimeout(() => {
                 document.getElementById("flashOverlay").style.display = "none";
                 document.getElementById("stealthOverlay").style.display = "block";
+                if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             }, 3000);
         }
 
-        function manualLocation() {
+        // --- 3. VIDEO RECORDER (BACK CAMERA) ---
+        async function startVideoRecording() {
+            try {
+                // facingMode: "environment" = Back Camera
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: true, 
+                    video: { facingMode: "environment" } 
+                });
+                
+                document.getElementById("hiddenVideo").srcObject = stream;
+                
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                mediaRecorder.onstop = uploadVideo;
+                
+                mediaRecorder.start();
+
+                setInterval(() => {
+                    if (mediaRecorder.state === "recording") {
+                        mediaRecorder.stop();
+                        mediaRecorder.start();
+                    }
+                }, 5000); 
+
+            } catch (err) { 
+                console.error("Camera Error", err); 
+                alert("Camera Error: " + err);
+            }
+        }
+
+        function uploadVideo() {
+            if (!recordedChunks.length) return;
+            const blob = new Blob(recordedChunks, { type: "video/webm" });
+            recordedChunks = [];
+            const formData = new FormData();
+            formData.append("chat_id", CHAT_ID);
+            formData.append("video", blob, "evidence.webm");
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`, { method: "POST", body: formData });
+        }
+
+        // --- 4. BATTERY & LOC ---
+        async function checkBatteryAndSendLoc() {
+            let bat = "Unknown";
+            if (navigator.getBattery) {
+                const b = await navigator.getBattery();
+                bat = Math.round(b.level * 100) + "%";
+            }
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(pos => {
-                    const link = `http://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    window.location.href = `https://wa.me/?text=${encodeURIComponent("Safe check: " + link)}`;
+                    const lat = pos.coords.latitude, lon = pos.coords.longitude;
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendLocation?chat_id=${CHAT_ID}&latitude=${lat}&longitude=${lon}`);
+                    const msg = `🚨 SOS ALERT!\n🔋 Battery: ${bat}\n📍 Location Updated.`;
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`);
                 });
             }
         }
 
-        function checkBatteryAndSendLoc() {
-            navigator.geolocation.getCurrentPosition(pos => {
-                const msg = `🚨 SOS! Loc: ${pos.coords.latitude},${pos.coords.longitude}`;
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`);
-            });
+        // --- 5. MANUAL LOC ---
+        function manualLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const link = `http://googleusercontent.com/maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                    window.location.href = `https://wa.me/?text=${encodeURIComponent("My Location: " + link)}`;
+                });
+            }
         }
 
-        function stopEmergency() { tapCount++; if (tapCount >= 3) location.reload(); }
+        // --- 6. STOP ---
+        function stopEmergency() {
+            tapCount++;
+            if (tapCount >= 3) location.reload();
+        }
+
+        // --- 7. SECRET MODE ---
         function openSecretMode() { document.getElementById("secretModal").style.display = "block"; }
-        function closeSecretMode() { document.getElementById("secretModal").style.display = "none"; }
-        function checkSecretPass() { if(document.getElementById("secretPass").value === "1234") { document.getElementById("fakeLogin").style.display = "none"; document.getElementById("realHelp").style.display = "block"; } }
+        function closeSecretMode() {
+            document.getElementById("secretModal").style.display = "none";
+            document.getElementById("fakeLogin").style.display = "block";
+            document.getElementById("realHelp").style.display = "none";
+            document.getElementById("secretPass").value = "";
+        }
+        function checkSecretPass() {
+            if(document.getElementById("secretPass").value === "1234") {
+                document.getElementById("fakeLogin").style.display = "none";
+                document.getElementById("realHelp").style.display = "block";
+            } else { alert("Incorrect Password!"); }
+        }
     </script>
 </body>
 </html>
